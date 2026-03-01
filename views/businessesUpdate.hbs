@@ -1,0 +1,26 @@
+<h1>Update Business</h1>
+
+<form method="POST" action="/Businesses/update" class="cuForm">
+
+    <input type="hidden" name="businessID" value="{{business.businessID}}">
+
+    <label>Business Name:</label>
+    <input type="text" name="businessName" value="{{business.businessName}}" required>
+
+    <label>Email:</label>
+    <input type="email" name="email" value="{{business.email}}" required>
+
+    <label>Payroll Frequency:</label>
+    <select name="payrollFrequencyID" required>
+        {{#each frequencies}}
+            <option value="{{this.payrollFrequencyID}}"
+                {{#if (eq this.payrollFrequencyID ../business.payrollFrequencyID)}}selected{{/if}}>
+                {{this.frequencyName}}
+            </option>
+        {{/each}}
+    </select>
+
+    <input type="submit" value="Update Business">
+</form>
+
+<a href="/Businesses">Back to Businesses</a>

@@ -1,0 +1,20 @@
+{
+  "name": "cs340_project",
+  "version": "1.0.0",
+  "description": "CS340 Project",
+  "main": "index.js",
+  "scripts": {
+    "development": "npx nodemon app.js",
+    "production": "npx forever start app.js",
+    "stop_production": "npx forever stop app.js"
+  },
+  "author": "Trong",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1",
+    "express-handlebars": "^8.0.6",
+    "forever": "^4.0.3",
+    "mysql2": "^3.16.3",
+    "nodemon": "^3.1.11"
+  }
+}

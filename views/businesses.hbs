@@ -1,0 +1,116 @@
+<h1>Businesses</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th class="id-col">ID</th>
+            <th>Business Name</th>
+            <th>Email</th>
+            <th>Payroll Frequency</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{#each businesses}}
+        <tr data-id="{{businessID}}">
+            <td class="id-col">{{businessID}}</td>
+            <td>{{businessName}}</td>
+            <td>{{email}}</td>
+            <td>{{frequencyName}}</td>
+
+            <td>
+                <div class="normal-actions">
+                    <button class="edit-btn">Edit</button>
+                </div>
+
+                <div class="edit-actions" style="display:none;">
+                    <form method="POST" action="/Businesses/delete" style="display:inline;">
+                        <input type="hidden" name="businessID" value="{{businessID}}">
+                        <button type="submit">Delete</button>
+                    </form>
+
+                    <form method="POST" action="/Businesses/prefill" style="display:inline;">
+                        <input type="hidden" name="businessID" value="{{businessID}}">
+                        <button type="submit">Update</button>
+                    </form>
+
+                    <button class="cancel-btn">Cancel</button>
+                </div>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>Create a Business</h2>
+<form method="POST" action="/Businesses/create" class="cuForm">
+    <label>Business Name:</label>
+    <input type="text" name="businessName" required>
+
+    <label>Email:</label>
+    <input type="email" name="email" required>
+
+    <label>Payroll Frequency:</label>
+    <select name="payrollFrequencyID" required>
+        <option value="" disabled selected>Select Frequency</option>
+        {{#each frequencies}}
+            <option value="{{this.payrollFrequencyID}}">{{this.frequencyName}}</option>
+        {{/each}}
+    </select>
+
+    <input type="submit" value="Create">
+</form>
+
+<hr>
+
+<h2>Update a Business</h2>
+<form method="POST" action="/Businesses/update" class="cuForm">
+    <label>Business to Update:</label>
+    <select name="businessID" required>
+        <option value="" disabled selected>Select a Business</option>
+        {{#each businesses}}
+        <option value="{{this.businessID}}">
+            {{this.businessID}} - {{this.businessName}}
+        </option>
+        {{/each}}
+    </select>
+
+    <label>New Business Name:</label>
+    <input type="text" name="businessName">
+
+    <label>New Email:</label>
+    <input type="email" name="email">
+
+    <label>New Payroll Frequency:</label>
+    <select name="payrollFrequencyID">
+        <option value="" disabled selected>Select Frequency</option>
+        {{#each frequencies}}
+            <option value="{{this.payrollFrequencyID}}">{{this.frequencyName}}</option>
+        {{/each}}
+    </select>
+
+    <input type="submit" value="Update">
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const row = btn.closest('tr');
+            row.querySelector('.normal-actions').style.display = 'none';
+            row.querySelector('.edit-actions').style.display = 'inline-block';
+        });
+    });
+
+    document.querySelectorAll('.cancel-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const row = btn.closest('tr');
+            row.querySelector('.normal-actions').style.display = 'inline-block';
+            row.querySelector('.edit-actions').style.display = 'none';
+        });
+    });
+});
+</script>

@@ -1,0 +1,100 @@
+<h1>Employee Deductions</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Deduction</th>
+            <th>Value</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{#each employeeDeductions}}
+        <tr data-id="{{employeeID}}-{{deductionID}}">
+            <td>{{firstName}} {{lastName}}</td>
+            <td>{{deductionName}}</td>
+            <td>{{deductionValue}}</td>
+
+            <td>
+                <div class="normal-actions">
+                    <button class="edit-btn">Edit</button>
+                </div>
+
+                <div class="edit-actions" style="display:none;">
+                    <form method="POST" action="/EmployeeDeductions/delete" style="display:inline;">
+                        <input type="hidden" name="employeeID" value="{{employeeID}}">
+                        <input type="hidden" name="deductionID" value="{{deductionID}}">
+                        <button type="submit">Delete</button>
+                    </form>
+
+                    <form method="POST" action="/EmployeeDeductions/update" style="display:inline;">
+                        <input type="hidden" name="employeeID" value="{{employeeID}}">
+                        <input type="hidden" name="deductionID" value="{{deductionID}}">
+
+                        <select name="newDeductionID">
+                            {{#each ../deductions}}
+                                <option value="{{this.deductionID}}"
+                                    {{#if (eq this.deductionID ../deductionID)}}selected{{/if}}>
+                                    {{this.deductionName}}
+                                </option>
+                            {{/each}}
+                        </select>
+
+                        <input type="number" step="0.01" name="deductionValue" value="{{deductionValue}}">
+
+                        <button type="submit">Save</button>
+                    </form>
+
+                    <button class="cancel-btn">Cancel</button>
+                </div>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>Add Employee Deduction</h2>
+<form method="POST" action="/EmployeeDeductions/create" class="cuForm">
+    <label>Employee:</label>
+    <select name="employeeID" required>
+        {{#each employees}}
+        <option value="{{employeeID}}">{{firstName}} {{lastName}}</option>
+        {{/each}}
+    </select>
+
+    <label>Deduction:</label>
+    <select name="deductionID" required>
+        {{#each deductions}}
+        <option value="{{deductionID}}">{{deductionName}}</option>
+        {{/each}}
+    </select>
+
+    <label>Value:</label>
+    <input type="number" step="0.01" name="deductionValue" required>
+
+    <input type="submit" value="Add Employee Deduction">
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const row = btn.closest('tr');
+            row.querySelector('.normal-actions').style.display = 'none';
+            row.querySelector('.edit-actions').style.display = 'inline-block';
+        });
+    });
+
+    document.querySelectorAll('.cancel-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const row = btn.closest('tr');
+            row.querySelector('.normal-actions').style.display = 'inline-block';
+            row.querySelector('.edit-actions').style.display = 'none';
+        });
+    });
+});
+</script>

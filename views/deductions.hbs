@@ -1,0 +1,144 @@
+<h1>Deductions</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Jurisdiction</th>
+            <th>Type</th>
+            <th>Business</th>
+            <th>Category</th>
+            <th>Method</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{#each deductions}}
+        <tr data-id="{{deductionID}}">
+            <td>{{deductionID}}</td>
+            <td>{{deductionName}}</td>
+            <td>{{jurisdiction}}</td>
+            <td>{{deductionType}}</td>
+            <td>{{businessName}}</td>
+            <td>{{categoryName}}</td>
+            <td>{{methodName}}</td>
+
+            <td>
+                <div class="normal-actions">
+                    <button class="edit-btn">Edit</button>
+                </div>
+
+                <div class="edit-actions" style="display:none;">
+                    <!-- DELETE -->
+                    <form method="POST" action="/Deductions/delete" style="display:inline;">
+                        <input type="hidden" name="deductionID" value="{{deductionID}}">
+                        <button type="submit">Delete</button>
+                    </form>
+
+                    <!-- UPDATE -->
+                    <form method="POST" action="/Deductions/update" style="display:inline;">
+                        <input type="hidden" name="deductionID" value="{{deductionID}}">
+
+                        <input type="text" name="deductionName" value="{{deductionName}}">
+                        <input type="text" name="jurisdiction" value="{{jurisdiction}}">
+                        <input type="text" name="deductionType" value="{{deductionType}}">
+
+                        <!-- BUSINESS SELECT -->
+                        <select name="businessID">
+                            {{#each ../businesses}}
+                                <option value="{{this.businessID}}"
+                                    {{#if (eq this.businessID ../businessID)}}selected{{/if}}>
+                                    {{this.businessName}}
+                                </option>
+                            {{/each}}
+                        </select>
+
+                        <!-- CATEGORY SELECT -->
+                        <select name="categoryID">
+                            {{#each ../categories}}
+                                <option value="{{this.categoryID}}"
+                                    {{#if (eq this.categoryID ../categoryID)}}selected{{/if}}>
+                                    {{this.categoryName}}
+                                </option>
+                            {{/each}}
+                        </select>
+
+                        <!-- METHOD SELECT -->
+                        <select name="methodID">
+                            {{#each ../methods}}
+                                <option value="{{this.methodID}}"
+                                    {{#if (eq this.methodID ../methodID)}}selected{{/if}}>
+                                    {{this.methodName}}
+                                </option>
+                            {{/each}}
+                        </select>
+
+                        <button type="submit">Save</button>
+                    </form>
+
+                    <button class="cancel-btn">Cancel</button>
+                </div>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>Add Deduction</h2>
+<form method="POST" action="/Deductions/create" class="cuForm">
+    <label>Name:</label>
+    <input type="text" name="deductionName" required>
+
+    <label>Jurisdiction:</label>
+    <input type="text" name="jurisdiction" required>
+
+    <label>Type:</label>
+    <input type="text" name="deductionType" required>
+
+    <label>Business:</label>
+    <select name="businessID" required>
+        {{#each businesses}}
+        <option value="{{businessID}}">{{businessName}}</option>
+        {{/each}}
+    </select>
+
+    <label>Category:</label>
+    <select name="categoryID" required>
+        {{#each categories}}
+        <option value="{{categoryID}}">{{categoryName}}</option>
+        {{/each}}
+    </select>
+
+    <label>Method:</label>
+    <select name="methodID" required>
+        {{#each methods}}
+        <option value="{{methodID}}">{{methodName}}</option>
+        {{/each}}
+    </select>
+
+    <input type="submit" value="Add Deduction">
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const row = btn.closest('tr');
+            row.querySelector('.normal-actions').style.display = 'none';
+            row.querySelector('.edit-actions').style.display = 'inline-block';
+        });
+    });
+
+    document.querySelectorAll('.cancel-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const row = btn.closest('tr');
+            row.querySelector('.normal-actions').style.display = 'inline-block';
+            row.querySelector('.edit-actions').style.display = 'none';
+        });
+    });
+});
+</script>

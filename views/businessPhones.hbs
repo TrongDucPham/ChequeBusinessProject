@@ -1,0 +1,92 @@
+<h1>Business Phones</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Business</th>
+            <th>Phone</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{#each phones}}
+        <tr data-id="{{phoneID}}">
+            <td>{{phoneID}}</td>
+            <td>{{businessName}}</td>
+            <td>{{phone}}</td>
+
+            <td>
+                <div class="normal-actions">
+                    <button class="edit-btn">Edit</button>
+                </div>
+
+                <div class="edit-actions" style="display:none;">
+                    <form method="POST" action="/BusinessPhones/delete" style="display:inline;">
+                        <input type="hidden" name="phoneID" value="{{phoneID}}">
+                        <button type="submit">Delete</button>
+                    </form>
+
+                    <form method="POST" action="/BusinessPhones/update" style="display:inline;">
+                        <input type="hidden" name="phoneID" value="{{phoneID}}">
+
+                        <select name="businessID">
+                            {{#each ../businesses}}
+                                <option value="{{this.businessID}}"
+                                    {{#if (eq this.businessID ../businessID)}}selected{{/if}}>
+                                    {{this.businessName}}
+                                </option>
+                            {{/each}}
+                        </select>
+
+                        <input type="text" name="phone" value="{{phone}}">
+
+                        <button type="submit">Save</button>
+                    </form>
+
+                    <button class="cancel-btn">Cancel</button>
+                </div>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>Add Phone</h2>
+<form method="POST" action="/BusinessPhones/create" class="cuForm">
+    <label>Business:</label>
+    <select name="businessID" required>
+        <option value="" disabled selected>Select Business</option>
+        {{#each businesses}}
+        <option value="{{businessID}}">{{businessName}}</option>
+        {{/each}}
+    </select>
+
+    <label>Phone:</label>
+    <input type="text" name="phone" required>
+
+    <input type="submit" value="Add Phone">
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const row = btn.closest('tr');
+            row.querySelector('.normal-actions').style.display = 'none';
+            row.querySelector('.edit-actions').style.display = 'inline-block';
+        });
+    });
+
+    document.querySelectorAll('.cancel-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const row = btn.closest('tr');
+            row.querySelector('.normal-actions').style.display = 'inline-block';
+            row.querySelector('.edit-actions').style.display = 'none';
+        });
+    });
+});
+</script>

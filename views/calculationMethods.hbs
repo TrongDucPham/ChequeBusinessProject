@@ -1,0 +1,29 @@
+<h1>Calculation Methods</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Method Name</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{#each methods}}
+        <tr>
+            <td>{{methodID}}</td>
+            <td>{{methodName}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>Add Calculation Method</h2>
+<form method="POST" action="/CalculationMethods/create" class="cuForm">
+    <label>Method Name:</label>
+    <input type="text" name="methodName" required>
+
+    <input type="submit" value="Add Method">
+</form>

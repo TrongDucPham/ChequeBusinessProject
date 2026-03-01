@@ -1,0 +1,104 @@
+<h1>Employees</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>First</th>
+            <th>Last</th>
+            <th>Hourly Rate</th>
+            <th>Business</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{#each employees}}
+        <tr data-id="{{employeeID}}">
+            <td>{{employeeID}}</td>
+            <td>{{firstName}}</td>
+            <td>{{lastName}}</td>
+            <td>{{hourlyRate}}</td>
+            <td>{{businessName}}</td>
+
+            <td>
+                <div class="normal-actions">
+                    <button class="edit-btn">Edit</button>
+                </div>
+
+                <div class="edit-actions" style="display:none;">
+                    <form method="POST" action="/Employees/delete" style="display:inline;">
+                        <input type="hidden" name="employeeID" value="{{employeeID}}">
+                        <button type="submit">Delete</button>
+                    </form>
+
+                    <form method="POST" action="/Employees/update" style="display:inline;">
+                        <input type="hidden" name="employeeID" value="{{employeeID}}">
+
+                        <input type="text" name="firstName" value="{{firstName}}">
+                        <input type="text" name="lastName" value="{{lastName}}">
+                        <input type="number" step="0.01" name="hourlyRate" value="{{hourlyRate}}">
+
+                        <select name="businessID">
+                            {{#each ../businesses}}
+                                <option value="{{this.businessID}}"
+                                    {{#if (eq this.businessID ../businessID)}}selected{{/if}}>
+                                    {{this.businessName}}
+                                </option>
+                            {{/each}}
+                        </select>
+
+                        <button type="submit">Save</button>
+                    </form>
+
+                    <button class="cancel-btn">Cancel</button>
+                </div>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>Add Employee</h2>
+<form method="POST" action="/Employees/create" class="cuForm">
+    <label>First Name:</label>
+    <input type="text" name="firstName" required>
+
+    <label>Last Name:</label>
+    <input type="text" name="lastName" required>
+
+    <label>Hourly Rate:</label>
+    <input type="number" step="0.01" name="hourlyRate" required>
+
+    <label>Business:</label>
+    <select name="businessID" required>
+        <option value="" disabled selected>Select Business</option>
+        {{#each businesses}}
+        <option value="{{businessID}}">{{businessName}}</option>
+        {{/each}}
+    </select>
+
+    <input type="submit" value="Add Employee">
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const row = btn.closest('tr');
+            row.querySelector('.normal-actions').style.display = 'none';
+            row.querySelector('.edit-actions').style.display = 'inline-block';
+        });
+    });
+
+    document.querySelectorAll('.cancel-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const row = btn.closest('tr');
+            row.querySelector('.normal-actions').style.display = 'inline-block';
+            row.querySelector('.edit-actions').style.display = 'none';
+        });
+    });
+});
+</script>

@@ -1,0 +1,29 @@
+<h1>Payroll Frequencies</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Frequency Name</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{#each frequencies}}
+        <tr>
+            <td>{{payrollFrequencyID}}</td>
+            <td>{{frequencyName}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>Add Payroll Frequency</h2>
+<form method="POST" action="/PayrollFrequencies/create" class="cuForm">
+    <label>Frequency Name:</label>
+    <input type="text" name="frequencyName" required>
+
+    <input type="submit" value="Add Frequency">
+</form>
