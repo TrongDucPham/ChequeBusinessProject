@@ -193,3 +193,14 @@ table th {
     line-height: 1.6;
     font-size: 1.1rem;
 }
+
+.error-box {
+    background: #ffdddd;
+    border-left: 4px solid #d00;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+}
+.error-box ul {
+    margin: 0;
+    padding-left: 20px;
+}

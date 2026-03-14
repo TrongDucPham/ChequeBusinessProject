@@ -1,5 +1,15 @@
 <h1>Time Entries</h1>
 
+{{#if errors}}
+<div class="error-box">
+    <ul>
+        {{#each errors}}
+            <li>{{this}}</li>
+        {{/each}}
+    </ul>
+</div>
+{{/if}}
+
 <table>
     <thead>
         <tr>
@@ -59,7 +69,7 @@
 <hr>
 
 <h2>Add Time Entry</h2>
-<form method="POST" action="/TimeEntries/create" class="cuForm">
+<form id="createTimeEntryForm" class="cuForm">
     <label>Employee:</label>
     <select name="employeeID" required>
         <option value="" disabled selected>Select Employee</option>
@@ -76,6 +86,111 @@
 
     <input type="submit" value="Add Entry">
 </form>
+
+<div id="errorModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h2 class="modal-title">⚠ Opps!!!</h2>
+
+        <ul id="errorList" class="modal-errors"></ul>
+
+        <div class="modal-buttons">
+            <button id="tryAgainBtn" class="btn btn-primary">Try Again</button>
+            <button id="cancelBtn" class="btn btn-secondary">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Background overlay */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.2s ease-out;
+    z-index: 9999;
+}
+
+/* Modal box */
+.modal-content {
+    background: #ffffff;
+    padding: 25px 30px;
+    border-radius: 12px;
+    width: 350px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    animation: slideDown 0.25s ease-out;
+}
+
+/* Title */
+.modal-title {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #d9534f;
+}
+
+/* Error list */
+.modal-errors {
+    margin: 0;
+    padding-left: 20px;
+    color: #333;
+    font-size: 15px;
+}
+
+/* Buttons container */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.15s ease-in-out;
+}
+
+.btn-primary {
+    background: #0275d8;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #025aa5;
+}
+
+.btn-secondary {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #c7c7c7;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-15px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+</style>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -95,4 +210,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+</script>
+
+<script>
+document.getElementById("createTimeEntryForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+        const response = await fetch("/TimeEntries/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const result = await response.json();
+            showErrorModal(result.errors);
+            return;
+        }
+
+        window.location.reload();
+
+    } catch (err) {
+        showErrorModal(["Unexpected error occurred."]);
+    }
+});
+
+function showErrorModal(errors) {
+    const modal = document.getElementById("errorModal");
+    const list = document.getElementById("errorList");
+
+    list.innerHTML = "";
+    errors.forEach(err => {
+        const li = document.createElement("li");
+        li.textContent = err;
+        list.appendChild(li);
+    });
+
+    modal.style.display = "flex";
+
+    document.getElementById("tryAgainBtn").onclick = () => {
+        modal.style.display = "none";
+    };
+
+    document.getElementById("cancelBtn").onclick = () => {
+        window.location.reload();
+    };
+}
 </script>

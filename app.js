@@ -361,8 +361,49 @@ app.get('/TimeEntries', async (req, res) => {
     }
 });
 
+// Validator
+
+function validateTimeEntry(req, res, next) {
+    const { employeeID, workDate, hoursWorked } = req.body;
+
+    const errors = [];
+
+    // Validate employeeID
+    if (!employeeID || isNaN(parseInt(employeeID))) {
+        errors.push("Invalid employee ID.");
+    }
+
+    // Validate workDate
+    const date = new Date(workDate);
+    if (!workDate || isNaN(date.getTime())) {
+        errors.push("Invalid work date.");
+    }
+
+    const today = new Date();
+    if (date > today) {
+        errors.push("Work date cannot be in the future.");
+    }
+
+    // Validate hoursWorked
+    const hours = parseFloat(hoursWorked);
+    if (isNaN(hours) || hours < 0) {
+        errors.push("Hours worked must be a positive number.");
+    }
+
+    // Optional: sanity check
+    if (hours > 24) {
+        errors.push("Hours worked cannot exceed 24 hours.");
+    }
+
+    // If errors exist, re-render page with messages
+    if (errors.length > 0) {
+        return res.status(400).json({errors});
+    }
+    next();
+};
+
 // CREATE Time Entry
-app.post('/TimeEntries/create', async (req, res) => {
+app.post('/TimeEntries/create', validateTimeEntry, async (req, res) => {
     try {
         let data = req.body;
 
@@ -388,7 +429,7 @@ app.post('/TimeEntries/create', async (req, res) => {
 });
 
 // UPDATE Time Entry
-app.post('/TimeEntries/update', async (req, res) => {
+app.post('/TimeEntries/update', validateTimeEntry, async (req, res) => {
     try {
         let data = req.body;
 
