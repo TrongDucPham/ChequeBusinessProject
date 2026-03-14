@@ -15,9 +15,14 @@ const { engine } = require('express-handlebars');
 app.engine('.hbs', engine({
     extname: '.hbs',
     helpers: {
-        eq: (a, b) => a == b
+        eq: (a, b) => a == b,
+        formatHours: (h) => {
+            if (h == null) return "0.00";
+            return Number(h).toFixed(2);
+        }
     }
 }));
+
 
 app.set('view engine', '.hbs');
 
@@ -353,6 +358,7 @@ app.get('/TimeEntries', async (req, res) => {
         const [[entries]] = await db.query("CALL sp_get_time_entries()");
         const [[employees]] = await db.query("CALL sp_get_employee_list()");
 
+        entries.sort((a, b) => a.timeEntryID - b.timeEntryID);
         res.render('timeEntries', { entries, employees });
 
     } catch (err) {
@@ -690,7 +696,7 @@ app.post('/CalculationMethods/create', async (req, res) => {
     }
 });
 
-// ########################### Calculation Methods ########################
+// ########################### Deduction Categories ########################
 
 app.get('/DeductionCategories', async (req, res) => {
     try {
@@ -720,6 +726,49 @@ app.post('/DeductionCategories/create', async (req, res) => {
         res.status(500).send("Error creating deduction category.");
     }
 });
+
+app.post('/DeductionCategories/update', async (req, res) => {
+    const { categoryID, categoryName } = req.body;
+
+    try {
+        const [[[{ rows_affected }]]] = await db.query(
+            "CALL sp_update_deduction_category(?, ?)",
+            [categoryID, categoryName]
+        );
+
+        if (rows_affected === 0) {
+            return res.status(400).json({ errors: ["Category not found."] });
+        }
+
+        res.json({ success: true });
+
+    } catch (err) {
+        console.error("Error updating Deduction Category:", err);
+        res.status(500).json({ errors: ["Failed to update deduction category."] });
+    }
+});
+
+app.post('/DeductionCategories/delete', async (req, res) => {
+    const { categoryID } = req.body;
+
+    try {
+        const [[[{ rows_affected }]]] = await db.query(
+            "CALL sp_delete_deduction_category(?)",
+            [categoryID]
+        );
+
+        if (rows_affected === 0) {
+            return res.status(400).json({ errors: ["Category not found or already deleted."] });
+        }
+
+        res.json({ success: true });
+
+    } catch (err) {
+        console.error("Error deleting Deduction Category:", err);
+        res.status(500).json({ errors: ["Failed to delete deduction category."] });
+    }
+});
+
 
 
 // ###############################################################

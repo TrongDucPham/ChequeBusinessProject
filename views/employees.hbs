@@ -7,6 +7,7 @@
             <th>First</th>
             <th>Last</th>
             <th>Hourly Rate</th>
+            <th>Total Hours</th>
             <th>Business</th>
             <th>Actions</th>
         </tr>
@@ -19,41 +20,44 @@
             <td>{{firstName}}</td>
             <td>{{lastName}}</td>
             <td>{{hourlyRate}}</td>
+            <td>{{formatHours totalHours}}</td>
             <td>{{businessName}}</td>
+            <td class="action-buttons">
 
-            <td>
-                <div class="normal-actions">
-                    <button class="edit-btn">Edit</button>
-                </div>
+                <!-- UPDATE -->
+                <form method="POST" action="/Employees/update" style="display:inline;">
+                    <input type="hidden" name="employeeID" value="{{employeeID}}">
 
-                <div class="edit-actions" style="display:none;">
-                    <form method="POST" action="/Employees/delete" style="display:inline;">
-                        <input type="hidden" name="employeeID" value="{{employeeID}}">
-                        <button type="submit">Delete</button>
-                    </form>
+                    <input type="text" name="firstName" value="{{firstName}}">
+                    <input type="text" name="lastName" value="{{lastName}}">
+                    <input type="number" step="0.01" name="hourlyRate" value="{{hourlyRate}}">
 
-                    <form method="POST" action="/Employees/update" style="display:inline;">
-                        <input type="hidden" name="employeeID" value="{{employeeID}}">
+                    <select name="businessID">
+                        {{#each ../businesses}}
+                            <option value="{{this.businessID}}"
+                                {{#if (eq this.businessID ../businessID)}}selected{{/if}}>
+                                {{this.businessName}}
+                            </option>
+                        {{/each}}
+                    </select>
 
-                        <input type="text" name="firstName" value="{{firstName}}">
-                        <input type="text" name="lastName" value="{{lastName}}">
-                        <input type="number" step="0.01" name="hourlyRate" value="{{hourlyRate}}">
+                    <button type="submit" class="save-btn">Save</button>
+                </form>
 
-                        <select name="businessID">
-                            {{#each ../businesses}}
-                                <option value="{{this.businessID}}"
-                                    {{#if (eq this.businessID ../businessID)}}selected{{/if}}>
-                                    {{this.businessName}}
-                                </option>
-                            {{/each}}
-                        </select>
+                <!-- DELETE -->
+                <form method="POST" action="/Employees/delete" style="display:inline;">
+                    <input type="hidden" name="employeeID" value="{{employeeID}}">
+                    <button type="submit" class="delete-btn"
+                        onclick="return confirm('Are you sure you want to delete this employee? This action cannot be undone.');">
+                        Delete
+                    </button>
+                </form>
+                
+                <!-- CANCEL (optional) -->
+                <button class="cancel-btn" onclick="window.location.reload()">Cancel</button>
 
-                        <button type="submit">Save</button>
-                    </form>
-
-                    <button class="cancel-btn">Cancel</button>
-                </div>
             </td>
+
         </tr>
         {{/each}}
     </tbody>
@@ -82,23 +86,3 @@
 
     <input type="submit" value="Add Employee">
 </form>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const row = btn.closest('tr');
-            row.querySelector('.normal-actions').style.display = 'none';
-            row.querySelector('.edit-actions').style.display = 'inline-block';
-        });
-    });
-
-    document.querySelectorAll('.cancel-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const row = btn.closest('tr');
-            row.querySelector('.normal-actions').style.display = 'inline-block';
-            row.querySelector('.edit-actions').style.display = 'none';
-        });
-    });
-});
-</script>

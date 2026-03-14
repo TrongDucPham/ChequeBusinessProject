@@ -5,6 +5,7 @@
         <tr>
             <th>ID</th>
             <th>Category Name</th>
+            <th>Actions</th>
         </tr>
     </thead>
 
@@ -13,6 +14,10 @@
         <tr>
             <td>{{categoryID}}</td>
             <td>{{categoryName}}</td>
+            <td>
+                <button class="edit-btn" data-id="{{categoryID}}" data-name="{{categoryName}}">Edit</button>
+                <button class="delete-btn" data-id="{{categoryID}}">Delete</button>
+            </td>
         </tr>
         {{/each}}
     </tbody>
