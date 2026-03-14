@@ -13,7 +13,7 @@ The goal of the project is to demonstrate practical database integration and ful
 
 2/ Academic Acknowledgments
 This project incorporates concepts and patterns learned from OSU course modules, including:
-Module: Exploration – Implementing CUD Operations in Your App
+Module 8: https://canvas.oregonstate.edu/courses/2031764/pages/exploration-implementing-cud-operations-in-your-app?module_item_id=26243436
 This module provided foundational guidance for:
     .Designing Create, Update, and Delete routes
     .Handling form submissions and server‑side validation
